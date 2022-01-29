@@ -2,3 +2,5 @@
 * text=auto
 *.sol linguist-language=Solidity
 test/* linguist-detectable=false
+utils/* linguist-detectable=false
+scripts/* linguist-detectable=false
