@@ -1,4 +1,4 @@
-# NFT Royalties Management System
+# NFT Royalty Management System
 
 _Work In Progress_
 
