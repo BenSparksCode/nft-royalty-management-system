@@ -5,11 +5,14 @@ import '@openzeppelin/contracts/access/Ownable.sol';
 import '@openzeppelin/contracts/token/common/ERC2981.sol';
 
 // TODO natspec for everything
-contract NFT1155 is ERC1155, ERC2981 {
+contract NFT1155 is ERC1155, ERC2981, Ownable {
 	uint256 public count = 1;
+	address public royaltyManager;
 
 	// TODO change URI to standard system
 	mapping(uint256 => string) private uris; // custom URI per NFT
+
+	event RoyaltyManagerUpdated(address indexed oldRoyaltyManager, address indexed newRoyaltyManager);
 
 	constructor() {}
 
@@ -23,6 +26,13 @@ contract NFT1155 is ERC1155, ERC2981 {
 		_mint(to, _tokenID, amount, '');
 	}
 
+	function setRoyaltyManager(address _royaltyManager) public onlyOwner {
+		address _oldManager = royaltyManager;
+		royaltyManager = _royaltyManager;
+
+		emit RoyaltyManagerUpdated(_oldManager, _royaltyManager);
+	}
+
 	function uri(uint256 _tokenId) public view override returns (string memory) {
 		return uris[_tokenId];
 	}
@@ -31,7 +41,7 @@ contract NFT1155 is ERC1155, ERC2981 {
 		return ERC1155.supportsInterface(interfaceId) || interfaceId == type(IERC2981).interfaceId;
 	}
 
-	function _configureRoyalties(uint256 _nftID) internal {
+	function _registerTokenRoyalties(uint256 _nftID) internal {
 		// TODO
 	}
 }
