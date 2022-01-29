@@ -1,5 +1,5 @@
 {
-  "name": "nft-royalties-management-system",
+  "name": "nft-royalty-management-system",
   "license": "MIT",
   "scripts": {
     "chain": "hardhat node",
