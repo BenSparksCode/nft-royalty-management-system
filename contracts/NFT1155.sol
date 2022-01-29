@@ -6,15 +6,31 @@ import '@openzeppelin/contracts/token/common/ERC2981.sol';
 
 // TODO natspec for everything
 contract NFT1155 is ERC1155, ERC2981, Ownable {
+	// -------------------------------------
+	// STORAGE
+	// -------------------------------------
+
 	uint256 public count = 1;
 	address public royaltyManager;
 
 	// TODO change URI to standard system
 	mapping(uint256 => string) private uris; // custom URI per NFT
 
+	// -------------------------------------
+	// EVENTS
+	// -------------------------------------
+
 	event RoyaltyManagerUpdated(address indexed oldRoyaltyManager, address indexed newRoyaltyManager);
 
+	// -------------------------------------
+	// CONSTRUCTOR
+	// -------------------------------------
+
 	constructor() {}
+
+	// -------------------------------------
+	// PUBLIC STATE-MODIFYING FUNCTIONS
+	// -------------------------------------
 
 	function mint(
 		address to,
@@ -26,6 +42,10 @@ contract NFT1155 is ERC1155, ERC2981, Ownable {
 		_mint(to, _tokenID, amount, '');
 	}
 
+	// -------------------------------------
+	// ONLY-OWNER FUNCTIONS
+	// -------------------------------------
+
 	function setRoyaltyManager(address _royaltyManager) public onlyOwner {
 		address _oldManager = royaltyManager;
 		royaltyManager = _royaltyManager;
@@ -33,15 +53,23 @@ contract NFT1155 is ERC1155, ERC2981, Ownable {
 		emit RoyaltyManagerUpdated(_oldManager, _royaltyManager);
 	}
 
+	// -------------------------------------
+	// INTERNAL STATE-MODIFYING FUNCTIONS
+	// -------------------------------------
+
+	function _registerTokenRoyalties(uint256 _nftID) internal {
+		// TODO
+	}
+
+	// -------------------------------------
+	// VIEW AND PURE FUNCTIONS
+	// -------------------------------------
+
 	function uri(uint256 _tokenId) public view override returns (string memory) {
 		return uris[_tokenId];
 	}
 
 	function supportsInterface(bytes4 interfaceId) public pure override(ERC1155, ERC2981) returns (bool) {
 		return ERC1155.supportsInterface(interfaceId) || interfaceId == type(IERC2981).interfaceId;
-	}
-
-	function _registerTokenRoyalties(uint256 _nftID) internal {
-		// TODO
 	}
 }

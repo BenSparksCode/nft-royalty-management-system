@@ -4,9 +4,9 @@ pragma solidity 0.8.11;
 import '@openzeppelin/contracts/access/Ownable.sol';
 
 contract RoyaltyManager is Ownable {
-	// ------------------------------
+	// -------------------------------------
 	// STORAGE
-	// ------------------------------
+	// -------------------------------------
 
 	uint256 public constant SCALE = 1e18;
 	uint256 public nftCollectorCount = 1;
@@ -26,21 +26,21 @@ contract RoyaltyManager is Ownable {
 		address artist;
 	}
 
-	// ------------------------------
+	// -------------------------------------
 	// EVENTS
-	// ------------------------------
+	// -------------------------------------
 
 	event RoyaltyCollectorCreated();
 
-	// ------------------------------
+	// -------------------------------------
 	// CONSTRUCTOR
-	// ------------------------------
+	// -------------------------------------
 
 	constructor() {}
 
-	// ------------------------------
+	// -------------------------------------
 	// STATE-MODIFYING FUNCTIONS
-	// ------------------------------
+	// -------------------------------------
 
 	function createRoyaltyCollector(uint256 _ID, string memory _uri) public returns (address) {
 		// TODO
@@ -58,9 +58,9 @@ contract RoyaltyManager is Ownable {
 		emit RoyaltyCollectorCreated(_nftID, _uri, newRoyaltyCollector);
 	}
 
-	// ------------------------------
+	// -------------------------------------
 	// VIEW FUNCTIONS
-	// ------------------------------
+	// -------------------------------------
 
 	function royaltyConfig(uint256 _ID) public returns (RoyaltyConfig) {
 		return nftRoyaltyConfigs[_ID];
