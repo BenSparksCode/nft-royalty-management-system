@@ -18,9 +18,9 @@ contract NFT1155 is ERC1155, ERC2981 {
 		uint256 amount,
 		string memory uri
 	) external returns (uint256 tokenId) {
-		uris[tokenId] = uri;
-		// Increment method based on Opyn's Squeeth ShortPowerPerp code
-		_mint(to, tokenId = count++, amount, '');
+		uint256 _tokenID = count++;
+		uris[_tokenID] = uri;
+		_mint(to, _tokenID, amount, '');
 	}
 
 	function uri(uint256 _tokenId) public view override returns (string memory) {
@@ -29,5 +29,9 @@ contract NFT1155 is ERC1155, ERC2981 {
 
 	function supportsInterface(bytes4 interfaceId) public pure override(ERC1155, ERC2981) returns (bool) {
 		return ERC1155.supportsInterface(interfaceId) || interfaceId == type(IERC2981).interfaceId;
+	}
+
+	function _configureRoyalties(uint256 _nftID) internal {
+		// TODO
 	}
 }
