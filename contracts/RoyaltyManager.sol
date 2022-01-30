@@ -3,13 +3,14 @@ pragma solidity 0.8.11;
 
 import '@openzeppelin/contracts/access/Ownable.sol';
 
-contract RoyaltyManager is Ownable {
+import './interfaces/IRoyaltyManager.sol';
+
+contract RoyaltyManager is IRoyaltyManager, Ownable {
 	// -------------------------------------
 	// STORAGE
 	// -------------------------------------
 
 	uint256 public constant SCALE = 1e18;
-	uint256 public nftCollectorCount = 1;
 
 	// TODO Start with global royalty, do individual control after
 	uint256 public royaltyFraction;

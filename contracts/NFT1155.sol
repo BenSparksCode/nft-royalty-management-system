@@ -34,6 +34,7 @@ contract NFT1155 is ERC1155, IERC2981, Ownable {
 	// PUBLIC STATE-MODIFYING FUNCTIONS
 	// -------------------------------------
 
+	// TODO change NFT to be standard 1155 - can adapt to usecase later
 	function mint(
 		address to,
 		uint256 amount,

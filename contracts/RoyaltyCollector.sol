@@ -21,7 +21,7 @@ contract RoyaltyCollector {
 	}
 
 	// -------------------------------------
-	// STATE-MODIFYING FUNCTIONS
+	// PUBLIC STATE-MODIFYING FUNCTIONS
 	// -------------------------------------
 
 	function payRoyaltiesETH() public {
