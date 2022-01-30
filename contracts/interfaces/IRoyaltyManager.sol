@@ -7,5 +7,5 @@ interface IRoyaltyManager {
 		view
 		returns (address receiver, uint256 royaltyAmount);
 
-	function registerTokenForRoyalties(uint256 _tokenID) external returns (address royaltyCollector);
+	function registerTokenForRoyalties(uint256 _tokenID, address _artist) external returns (address royaltyCollector);
 }

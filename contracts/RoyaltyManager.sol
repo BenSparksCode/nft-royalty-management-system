@@ -3,6 +3,7 @@ pragma solidity 0.8.11;
 
 import '@openzeppelin/contracts/access/Ownable.sol';
 
+import './RoyaltyCollector.sol';
 import './interfaces/IRoyaltyManager.sol';
 
 // TODO note: need to deploy a RoyaltyManager contract per NFT contract
@@ -15,9 +16,10 @@ contract RoyaltyManager is IRoyaltyManager, Ownable {
 	uint256 public constant SCALE = 1e18;
 
 	// TODO Start with global royalty, do individual control after
-	uint256 public royaltyFraction;
+	uint256 public defaultRoyaltyFraction;
+	uint256 public defaultRoyaltySplitForPrimaryRecipient;
 
-	address public secondaryRoyaltyRecipient; // common
+	address public secondaryRoyaltyRecipient; // common recipient - i.e. protocol treasury
 
 	address public immutable whitelistedNFT; // only contract that can create new RoyaltyCollectors
 
@@ -50,26 +52,42 @@ contract RoyaltyManager is IRoyaltyManager, Ownable {
 	// PUBLIC STATE-MODIFYING FUNCTIONS
 	// -------------------------------------
 
-	function registerTokenForRoyalties(uint256 _tokenID) public returns (address royaltyCollector) {
+	function registerTokenForRoyalties(uint256 _tokenID, address _artist) public returns (address royaltyCollector) {
 		// TODO
 		require(msg.sender == whitelistedNFT, 'RMS: NO TOKEN REGISTRATION AUTH');
 		require(nftRoyaltyConfigs[_tokenID].royaltyCollector == address(0), 'RMS: TOKEN ID ALREADY REGISTERED');
 
-		royaltyCollector = _createNewRoyaltyCollector(_tokenID);
+		royaltyCollector = _createNewRoyaltyCollector(_tokenID, _artist);
+	}
+
+	// -------------------------------------
+	// ONLY-OWNER FUNCTIONS
+	// -------------------------------------
+
+	function setDefaultRoyaltyFraction() public onlyOwner {
+		// TODO
+	}
+
+	function setDefaultRoyaltySplitForPrimaryRecipient() public onlyOwner {
+		// TODO
 	}
 
 	// -------------------------------------
 	// INTERNAL STATE-MODIFYING FUNCTIONS
 	// -------------------------------------
 
-	function _createNewRoyaltyCollector(uint256 _tokenID) internal returns (address royaltyCollector) {
-		// TODO
+	function _createNewRoyaltyCollector(uint256 _tokenID, address _artist)
+		internal
+		returns (address royaltyCollectorAddr)
+	{
+		RoyaltyCollector _royaltyCollector = new RoyaltyCollector(_tokenID);
+		royaltyCollectorAddr = address(_royaltyCollector);
 
-		// TODO Use Squeeth increment code in creation here
+		RoyaltyConfig memory _royaltyConfig = RoyaltyConfig(defaultRoyaltyFraction, royaltyCollectorAddr, _artist);
 
-		address newRoyaltyCollector = address(0); //TODO complete
+		royaltyCollectorContracts.push(royaltyCollectorAddr);
 
-		emit RoyaltyCollectorCreated(_tokenID, newRoyaltyCollector);
+		emit RoyaltyCollectorCreated(_tokenID, royaltyCollectorAddr);
 	}
 
 	// -------------------------------------

@@ -38,12 +38,13 @@ contract NFT1155 is ERC1155, IERC2981, Ownable {
 	function mint(
 		address to,
 		uint256 amount,
-		string memory uri
+		string memory uri,
+		address artist
 	) external returns (uint256 tokenId) {
 		uint256 _tokenID = count++;
 		uris[_tokenID] = uri;
 		_mint(to, _tokenID, amount, '');
-		_registerTokenRoyalties(_tokenID);
+		IRoyaltyManager(royaltyManager).registerTokenForRoyalties(_tokenID, artist);
 	}
 
 	// -------------------------------------
@@ -55,17 +56,6 @@ contract NFT1155 is ERC1155, IERC2981, Ownable {
 		royaltyManager = _royaltyManager;
 
 		emit RoyaltyManagerUpdated(_oldManager, _royaltyManager);
-	}
-
-	// -------------------------------------
-	// INTERNAL STATE-MODIFYING FUNCTIONS
-	// -------------------------------------
-
-	function _registerTokenRoyalties(uint256 _nftID) internal {
-		// TODO
-		// Call RoyaltyManager - get returned address of new contract
-		// Set contract address in NFT royalty mapping
-		// IRoyaltyManager(royaltyManager).registerTokenForRoyalties
 	}
 
 	// -------------------------------------
