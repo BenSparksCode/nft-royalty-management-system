@@ -35,7 +35,7 @@ contract RoyaltyManager is IRoyaltyManager, Ownable {
 	// EVENTS
 	// -------------------------------------
 
-	event RoyaltyCollectorCreated(uint256 nftID, string nftURI, address royaltyCollector);
+	event RoyaltyCollectorCreated(uint256 nftID, address royaltyCollector);
 
 	// -------------------------------------
 	// CONSTRUCTOR
@@ -47,22 +47,29 @@ contract RoyaltyManager is IRoyaltyManager, Ownable {
 	}
 
 	// -------------------------------------
-	// STATE-MODIFYING FUNCTIONS
+	// PUBLIC STATE-MODIFYING FUNCTIONS
 	// -------------------------------------
 
-	function registerTokenForRoyalties(uint256 _tokenID) public {
+	function registerTokenForRoyalties(uint256 _tokenID) public returns (address royaltyCollector) {
 		// TODO
-		require(msg.sender == whitelistedNFT, 'RMS: NO TKOEN REGISTRATION AUTH');
+		require(msg.sender == whitelistedNFT, 'RMS: NO TOKEN REGISTRATION AUTH');
+		require(nftRoyaltyConfigs[_tokenID].royaltyCollector == address(0), 'RMS: TOKEN ID ALREADY REGISTERED');
+
+		royaltyCollector = _createNewRoyaltyCollector(_tokenID);
 	}
 
-	function createRoyaltyCollector(uint256 _ID, string memory _uri) public returns (address) {
+	// -------------------------------------
+	// INTERNAL STATE-MODIFYING FUNCTIONS
+	// -------------------------------------
+
+	function _createNewRoyaltyCollector(uint256 _tokenID) internal returns (address royaltyCollector) {
 		// TODO
 
 		// TODO Use Squeeth increment code in creation here
 
 		address newRoyaltyCollector = address(0); //TODO complete
 
-		emit RoyaltyCollectorCreated(_ID, _uri, newRoyaltyCollector);
+		emit RoyaltyCollectorCreated(_tokenID, newRoyaltyCollector);
 	}
 
 	// -------------------------------------
