@@ -4,6 +4,8 @@ import '@rari-capital/solmate/src/tokens/ERC1155.sol';
 import '@openzeppelin/contracts/access/Ownable.sol';
 import '@openzeppelin/contracts/token/common/ERC2981.sol';
 
+import './interfaces/IRoyaltyManager.sol';
+
 // TODO natspec for everything
 contract NFT1155 is ERC1155, ERC2981, Ownable {
 	// -------------------------------------
@@ -40,6 +42,7 @@ contract NFT1155 is ERC1155, ERC2981, Ownable {
 		uint256 _tokenID = count++;
 		uris[_tokenID] = uri;
 		_mint(to, _tokenID, amount, '');
+		_registerTokenRoyalties(_tokenID);
 	}
 
 	// -------------------------------------
@@ -59,6 +62,8 @@ contract NFT1155 is ERC1155, ERC2981, Ownable {
 
 	function _registerTokenRoyalties(uint256 _nftID) internal {
 		// TODO
+		// Call RoyaltyManager - get returned address of new contract
+		// Set contract address in NFT royalty mapping
 	}
 
 	// -------------------------------------
@@ -67,6 +72,15 @@ contract NFT1155 is ERC1155, ERC2981, Ownable {
 
 	function uri(uint256 _tokenId) public view override returns (string memory) {
 		return uris[_tokenId];
+	}
+
+	function royaltyInfo(uint256 _tokenId, uint256 _salePrice)
+		external
+		view
+		override
+		returns (address receiver, uint256 royaltyAmount)
+	{
+		(receiver, royaltyAmount) = IRoyaltyManager(royaltyManager).royaltyInfo(_tokenId, _salePrice);
 	}
 
 	function supportsInterface(bytes4 interfaceId) public pure override(ERC1155, ERC2981) returns (bool) {

@@ -21,7 +21,7 @@ contract RoyaltyManager is Ownable {
 	address[] public royaltyCollectorContracts;
 
 	struct RoyaltyConfig {
-		uint256 royaltyFraction;
+		uint256 royaltyFraction; // numerator over SCALE (1e18)
 		address royaltyCollector;
 		address artist;
 	}
@@ -61,6 +61,17 @@ contract RoyaltyManager is Ownable {
 	// -------------------------------------
 	// VIEW FUNCTIONS
 	// -------------------------------------
+
+	// Called from NFT to retrieve latest royalty data
+	function royaltyInfo(uint256 _tokenId, uint256 _salePrice)
+		public
+		view
+		returns (address receiver, uint256 royaltyAmount)
+	{
+		RoyaltyConfig memory _royaltyConfig = nftRoyaltyConfigs[_tokenId];
+		receiver = _royaltyConfig.royaltyCollector;
+		royaltyAmount = (_salePrice * _royaltyConfig.royaltyFraction) / SCALE;
+	}
 
 	function royaltyConfig(uint256 _ID) public returns (RoyaltyConfig) {
 		return nftRoyaltyConfigs[_ID];
