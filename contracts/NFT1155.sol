@@ -65,6 +65,7 @@ contract NFT1155 is ERC1155, IERC2981, Ownable {
 		// TODO
 		// Call RoyaltyManager - get returned address of new contract
 		// Set contract address in NFT royalty mapping
+		// IRoyaltyManager(royaltyManager).createRoyaltyCollector
 	}
 
 	// -------------------------------------
