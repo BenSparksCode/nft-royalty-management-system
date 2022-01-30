@@ -19,6 +19,8 @@ contract RoyaltyManager is IRoyaltyManager, Ownable {
 
 	address public secondaryRoyaltyRecipient; // common
 
+	address public immutable whitelistedNFT; // only contract that can create new RoyaltyCollectors
+
 	// NFT ID => Royalty config for that NFT ID
 	mapping(uint256 => RoyaltyConfig) public nftRoyaltyConfigs;
 	address[] public royaltyCollectorContracts;
@@ -39,15 +41,18 @@ contract RoyaltyManager is IRoyaltyManager, Ownable {
 	// CONSTRUCTOR
 	// -------------------------------------
 
-	constructor() {}
+	constructor(address _NFT) {
+		// Only this NFT can create new Royalty Collectors
+		whitelistedNFT = _NFT;
+	}
 
 	// -------------------------------------
 	// STATE-MODIFYING FUNCTIONS
 	// -------------------------------------
 
-	// Registers under the msg.sender address, so should be called from NFT token contract
 	function registerTokenForRoyalties(uint256 _tokenID) public {
 		// TODO
+		require(msg.sender == whitelistedNFT, 'RMS: NO TKOEN REGISTRATION AUTH');
 	}
 
 	function createRoyaltyCollector(uint256 _ID, string memory _uri) public returns (address) {
