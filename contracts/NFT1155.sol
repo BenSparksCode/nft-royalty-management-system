@@ -2,12 +2,12 @@ pragma solidity 0.8.11;
 
 import '@rari-capital/solmate/src/tokens/ERC1155.sol';
 import '@openzeppelin/contracts/access/Ownable.sol';
-import '@openzeppelin/contracts/token/common/ERC2981.sol';
+import '@openzeppelin/contracts/interfaces/IERC2981.sol';
 
 import './interfaces/IRoyaltyManager.sol';
 
 // TODO natspec for everything
-contract NFT1155 is ERC1155, ERC2981, Ownable {
+contract NFT1155 is ERC1155, IERC2981, Ownable {
 	// -------------------------------------
 	// STORAGE
 	// -------------------------------------
@@ -74,16 +74,15 @@ contract NFT1155 is ERC1155, ERC2981, Ownable {
 		return uris[_tokenId];
 	}
 
-	function royaltyInfo(uint256 _tokenId, uint256 _salePrice)
-		external
+	function royaltyInfo(uint256 tokenId, uint256 salePrice)
+		public
 		view
-		override
 		returns (address receiver, uint256 royaltyAmount)
 	{
-		(receiver, royaltyAmount) = IRoyaltyManager(royaltyManager).royaltyInfo(_tokenId, _salePrice);
+		(receiver, royaltyAmount) = IRoyaltyManager(royaltyManager).royaltyInfo(tokenId, salePrice);
 	}
 
-	function supportsInterface(bytes4 interfaceId) public pure override(ERC1155, ERC2981) returns (bool) {
+	function supportsInterface(bytes4 interfaceId) public pure override(ERC1155, IERC165) returns (bool) {
 		return ERC1155.supportsInterface(interfaceId) || interfaceId == type(IERC2981).interfaceId;
 	}
 }

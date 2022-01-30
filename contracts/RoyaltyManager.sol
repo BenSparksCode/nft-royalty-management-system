@@ -30,7 +30,7 @@ contract RoyaltyManager is Ownable {
 	// EVENTS
 	// -------------------------------------
 
-	event RoyaltyCollectorCreated();
+	event RoyaltyCollectorCreated(uint256 nftID, string nftURI, address royaltyCollector);
 
 	// -------------------------------------
 	// CONSTRUCTOR
@@ -52,12 +52,6 @@ contract RoyaltyManager is Ownable {
 		emit RoyaltyCollectorCreated(_ID, _uri, newRoyaltyCollector);
 	}
 
-	function checkVRFSetup(uint256 _nftID) {
-		// TODO ??
-
-		emit RoyaltyCollectorCreated(_nftID, _uri, newRoyaltyCollector);
-	}
-
 	// -------------------------------------
 	// VIEW FUNCTIONS
 	// -------------------------------------
@@ -73,8 +67,18 @@ contract RoyaltyManager is Ownable {
 		royaltyAmount = (_salePrice * _royaltyConfig.royaltyFraction) / SCALE;
 	}
 
-	function royaltyConfig(uint256 _ID) public returns (RoyaltyConfig) {
-		return nftRoyaltyConfigs[_ID];
+	function royaltyConfig(uint256 _ID)
+		public
+		returns (
+			uint256 royaltyFraction,
+			address royaltyCollector,
+			address artist
+		)
+	{
+		RoyaltyConfig memory _royaltyConfig = nftRoyaltyConfigs[_ID];
+		royaltyFraction = _royaltyConfig.royaltyFraction;
+		royaltyCollector = _royaltyConfig.royaltyCollector;
+		artist = _royaltyConfig.artist;
 	}
 
 	function allRoyalties(address _token) public view returns (uint256, uint256) {
