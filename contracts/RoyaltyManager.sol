@@ -16,8 +16,8 @@ contract RoyaltyManager is IRoyaltyManager, Ownable {
 	uint256 public constant SCALE = 1e18;
 
 	// TODO Start with global royalty, do individual control after
-	uint256 public defaultRoyaltyFraction;
-	uint256 public defaultRoyaltySplitForPrimaryRecipient;
+	uint256 public defaultRoyaltyPercentageOfSale;
+	uint256 public defaultRoyaltySplitForArtist;
 
 	address public secondaryRoyaltyRecipient; // common recipient - i.e. protocol treasury
 
@@ -25,10 +25,11 @@ contract RoyaltyManager is IRoyaltyManager, Ownable {
 
 	// NFT ID => Royalty config for that NFT ID
 	mapping(uint256 => RoyaltyConfig) public nftRoyaltyConfigs;
-	address[] public royaltyCollectorContracts;
+	address[] public royaltyCollectorContracts; //TODO get rid of array and use NFT ID to loop in mapping
 
 	struct RoyaltyConfig {
-		uint256 royaltyFraction; // numerator over SCALE (1e18)
+		uint256 royaltyPercentageOfSale; // numerator over SCALE (1e18)
+		uint256 royaltySplitForArtist; // the artist
 		address royaltyCollector;
 		address artist;
 	}
@@ -83,9 +84,14 @@ contract RoyaltyManager is IRoyaltyManager, Ownable {
 		RoyaltyCollector _royaltyCollector = new RoyaltyCollector(_tokenID);
 		royaltyCollectorAddr = address(_royaltyCollector);
 
-		RoyaltyConfig memory _royaltyConfig = RoyaltyConfig(defaultRoyaltyFraction, royaltyCollectorAddr, _artist);
+		RoyaltyConfig memory _royaltyConfig = RoyaltyConfig(
+			defaultRoyaltyPercentageOfSale,
+			defaultRoyaltySplitForArtist,
+			royaltyCollectorAddr,
+			_artist
+		);
 
-		royaltyCollectorContracts.push(royaltyCollectorAddr);
+		royaltyCollectorContracts.push(royaltyCollectorAddr); //TODO only use mapping
 
 		emit RoyaltyCollectorCreated(_tokenID, royaltyCollectorAddr);
 	}
@@ -102,19 +108,21 @@ contract RoyaltyManager is IRoyaltyManager, Ownable {
 	{
 		RoyaltyConfig memory _royaltyConfig = nftRoyaltyConfigs[_tokenID];
 		receiver = _royaltyConfig.royaltyCollector;
-		royaltyAmount = (_salePrice * _royaltyConfig.royaltyFraction) / SCALE;
+		royaltyAmount = (_salePrice * _royaltyConfig.royaltyPercentageOfSale) / SCALE;
 	}
 
 	function royaltyConfig(uint256 _tokenID)
 		public
 		returns (
-			uint256 royaltyFraction,
+			uint256 royaltyPercentageOfSale,
+			uint256 royaltySplitForArtist,
 			address royaltyCollector,
 			address artist
 		)
 	{
 		RoyaltyConfig memory _royaltyConfig = nftRoyaltyConfigs[_tokenID];
-		royaltyFraction = _royaltyConfig.royaltyFraction;
+		royaltyPercentageOfSale = _royaltyConfig.royaltyPercentageOfSale;
+		royaltySplitForArtist = _royaltyConfig.royaltySplitForArtist;
 		royaltyCollector = _royaltyConfig.royaltyCollector;
 		artist = _royaltyConfig.artist;
 	}
