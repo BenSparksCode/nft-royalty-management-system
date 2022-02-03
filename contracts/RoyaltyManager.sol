@@ -64,10 +64,12 @@ contract RoyaltyManager is IRoyaltyManager, Ownable {
 	// -------------------------------------
 
 	function setDefaultRoyaltyPercentageOfSale(uint256 _newRoyaltyPercentageOfSale) public onlyOwner {
+		require(_newRoyaltyPercentageOfSale <= SCALE, 'RMS: INVALID ROYALTY PERCENTAGE');
 		defaultRoyaltyPercentageOfSale = _newRoyaltyPercentageOfSale;
 	}
 
 	function setDefaultRoyaltySplitForArtist(uint256 _newRoyaltySplitForArtist) public onlyOwner {
+		require(_newRoyaltySplitForArtist <= SCALE, 'RMS: INVALID ARTIST SPLIT');
 		defaultRoyaltySplitForArtist = _newRoyaltySplitForArtist;
 	}
 
