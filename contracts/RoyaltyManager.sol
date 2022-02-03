@@ -6,8 +6,6 @@ import '@openzeppelin/contracts/access/Ownable.sol';
 import './RoyaltyCollector.sol';
 import './interfaces/IRoyaltyManager.sol';
 
-// TODO note: need to deploy a RoyaltyManager contract per NFT contract
-// Could extend to single manager for multiple NFT contracts in future
 contract RoyaltyManager is IRoyaltyManager, Ownable {
 	// -------------------------------------
 	// STORAGE
@@ -29,9 +27,9 @@ contract RoyaltyManager is IRoyaltyManager, Ownable {
 
 	struct RoyaltyConfig {
 		uint256 royaltyPercentageOfSale; // numerator over SCALE (1e18)
-		uint256 royaltySplitForArtist; // the artist
-		address royaltyCollector;
-		address artist;
+		uint256 royaltySplitForArtist;
+		address royaltyCollector; // address of the Collector for specific NFT ID
+		address artist; // artist = primary royalty recipient
 	}
 
 	// -------------------------------------
@@ -65,12 +63,12 @@ contract RoyaltyManager is IRoyaltyManager, Ownable {
 	// ONLY-OWNER FUNCTIONS
 	// -------------------------------------
 
-	function setDefaultRoyaltyFraction() public onlyOwner {
-		// TODO
+	function setDefaultRoyaltyPercentageOfSale(uint256 _newRoyaltyPercentageOfSale) public onlyOwner {
+		defaultRoyaltyPercentageOfSale = _newRoyaltyPercentageOfSale;
 	}
 
-	function setDefaultRoyaltySplitForPrimaryRecipient() public onlyOwner {
-		// TODO
+	function setDefaultRoyaltySplitForArtist(uint256 _newRoyaltySplitForArtist) public onlyOwner {
+		defaultRoyaltySplitForArtist = _newRoyaltySplitForArtist;
 	}
 
 	// -------------------------------------
