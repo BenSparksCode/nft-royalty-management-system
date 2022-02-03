@@ -63,14 +63,37 @@ contract RoyaltyManager is IRoyaltyManager, Ownable {
 	// ONLY-OWNER FUNCTIONS
 	// -------------------------------------
 
+	// Can only change royalty % and artist cut
+	function setSpecificRoyaltyConfig(
+		uint256 _tokenID,
+		uint256 _newRoyaltyPercentageOfSale,
+		uint256 _newRoyaltySplitForArtist
+	) public onlyOwner {
+		require(_newRoyaltyPercentageOfSale <= SCALE, 'RMS: INVALID ROYALTY PERCENTAGE');
+		require(_newRoyaltySplitForArtist <= SCALE, 'RMS: INVALID ARTIST SPLIT');
+
+		RoyaltyConfig memory _royaltyConfig = nftRoyaltyConfigs[_tokenID];
+
+		require(_royaltyConfig.royaltyCollector != address(0), 'RMS: TOKEN ID NOT REGISTERED');
+
+		_royaltyConfig.royaltyPercentageOfSale = _newRoyaltyPercentageOfSale;
+		_royaltyConfig.royaltySplitForArtist = _newRoyaltySplitForArtist;
+
+		nftRoyaltyConfigs[_tokenID] = _royaltyConfig;
+
+		// TODO add event
+	}
+
 	function setDefaultRoyaltyPercentageOfSale(uint256 _newRoyaltyPercentageOfSale) public onlyOwner {
 		require(_newRoyaltyPercentageOfSale <= SCALE, 'RMS: INVALID ROYALTY PERCENTAGE');
 		defaultRoyaltyPercentageOfSale = _newRoyaltyPercentageOfSale;
+		// TODO add event
 	}
 
 	function setDefaultRoyaltySplitForArtist(uint256 _newRoyaltySplitForArtist) public onlyOwner {
 		require(_newRoyaltySplitForArtist <= SCALE, 'RMS: INVALID ARTIST SPLIT');
 		defaultRoyaltySplitForArtist = _newRoyaltySplitForArtist;
+		// TODO add event
 	}
 
 	// -------------------------------------
