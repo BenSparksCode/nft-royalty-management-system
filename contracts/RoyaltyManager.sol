@@ -25,12 +25,13 @@ contract RoyaltyManager is IRoyaltyManager, Ownable {
 	mapping(uint256 => RoyaltyConfig) public nftRoyaltyConfigs;
 	address[] public royaltyCollectorContracts; //TODO get rid of array and use NFT ID to loop in mapping
 
-	struct RoyaltyConfig {
-		uint256 royaltyPercentageOfSale; // numerator over SCALE (1e18)
-		uint256 royaltySplitForArtist;
-		address royaltyCollector; // address of the Collector for specific NFT ID
-		address artist; // artist = primary royalty recipient
-	}
+	// TODO remove - moved to interface
+	// struct RoyaltyConfig {
+	// 	uint256 royaltyPercentageOfSale; // numerator over SCALE (1e18)
+	// 	uint256 royaltySplitForArtist;
+	// 	address royaltyCollector; // address of the Collector for specific NFT ID
+	// 	address artist; // artist = primary royalty recipient
+	// }
 
 	// -------------------------------------
 	// EVENTS
@@ -139,6 +140,8 @@ contract RoyaltyManager is IRoyaltyManager, Ownable {
 
 		emit RoyaltyCollectorCreated(_tokenID, royaltyCollectorAddr);
 	}
+
+	function _payRoyalty() internal {}
 
 	// -------------------------------------
 	// VIEW FUNCTIONS
