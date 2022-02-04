@@ -63,6 +63,14 @@ contract RoyaltyManager is IRoyaltyManager, Ownable {
 	// ONLY-OWNER FUNCTIONS
 	// -------------------------------------
 
+	function payRoyaltyByID(uint256 _tokenID) public onlyOwner {
+		// TODO
+	}
+
+	function payAllRoyalties() public onlyOwner {
+		// TODO
+	}
+
 	// Can only change royalty % and artist cut
 	function setSpecificRoyaltyConfig(
 		uint256 _tokenID,
@@ -93,6 +101,11 @@ contract RoyaltyManager is IRoyaltyManager, Ownable {
 	function setDefaultRoyaltySplitForArtist(uint256 _newRoyaltySplitForArtist) public onlyOwner {
 		require(_newRoyaltySplitForArtist <= SCALE, 'RMS: INVALID ARTIST SPLIT');
 		defaultRoyaltySplitForArtist = _newRoyaltySplitForArtist;
+		// TODO add event
+	}
+
+	function setSecondaryRoyaltyRecipient(address _newSecondaryRoyaltyRecipient) public onlyOwner {
+		secondaryRoyaltyRecipient = _newSecondaryRoyaltyRecipient;
 		// TODO add event
 	}
 
