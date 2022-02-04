@@ -65,6 +65,14 @@ contract RoyaltyManager is IRoyaltyManager, Ownable {
 
 	function payRoyaltyByID(uint256 _tokenID) public onlyOwner {
 		// TODO
+
+		RoyaltyConfig memory _royaltyConfig = nftRoyaltyConfigs[_tokenID];
+		require(_royaltyConfig.royaltyCollector != address(0), 'RMS: TOKEN ID NOT REGISTERED');
+
+		// uint256 royaltyPercentageOfSale; // numerator over SCALE (1e18)
+		// uint256 royaltySplitForArtist;
+		// address royaltyCollector; // address of the Collector for specific NFT ID
+		// address artist; // artist = primary royalty recipient
 	}
 
 	function payAllRoyalties() public onlyOwner {
