@@ -83,3 +83,15 @@ contract RoyaltyCollector {
 		_;
 	}
 }
+
+interface IERC20 {
+	function balanceOf(address _account) external view returns (uint256);
+
+	function transfer(address to, uint256 amount) external returns (bool);
+
+	function transferFrom(
+		address spender,
+		address to,
+		uint256 amount
+	) external returns (bool);
+}
