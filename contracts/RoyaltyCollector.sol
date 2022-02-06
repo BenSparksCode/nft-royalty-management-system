@@ -30,9 +30,15 @@ contract RoyaltyCollector {
 		// Use _token = address(0) for ETH royalties
 		// TODO
 
+		(uint256 artistRoyalty, uint256 secondaryRoyalty, address artist) = getRoyaltySplitData(address(this).balance);
+		address secondaryRecipient = IRoyaltyManager(manager).secondaryRoyaltyRecipient();
+
 		if (_token == address(0)) {
 			// ETH royalties
-			// TODO
+			(bool artistSent, ) = artist.call{ value: artistRoyalty }('');
+			(bool secondarySent, ) = secondaryRecipient.call{ value: secondaryRoyalty }('');
+
+			require(artistSent && secondarySent, 'RMS: ETH PAYMENT FAILED');
 		} else {
 			// ERC20 royalties
 			// TODO
@@ -50,14 +56,22 @@ contract RoyaltyCollector {
 		// TODO returns royalties for artist, system
 	}
 
-	function calcRoyaltySplit(uint256 _totalRoyalty) public view returns (uint256, uint256) {
+	function getRoyaltySplitData(uint256 _totalRoyalty)
+		public
+		view
+		returns (
+			uint256,
+			uint256,
+			address
+		)
+	{
 		// Pull data from manager
-		(, uint256 royaltySplitForArtist, , ) = IRoyaltyManager(manager).nftRoyaltyConfigs(nftID);
+		(, uint256 royaltySplitForArtist, , address artist) = IRoyaltyManager(manager).nftRoyaltyConfigs(nftID);
 
-		uint256 _artistRoyalty = (_totalRoyalty * royaltySplitForArtist) / SCALE;
-		uint256 _secondaryRoyalty = (_totalRoyalty * (SCALE - royaltySplitForArtist)) / SCALE;
+		uint256 artistRoyalty = (_totalRoyalty * royaltySplitForArtist) / SCALE;
+		uint256 secondaryRoyalty = (_totalRoyalty * (SCALE - royaltySplitForArtist)) / SCALE;
 
-		return (_artistRoyalty, _secondaryRoyalty);
+		return (artistRoyalty, secondaryRoyalty, artist);
 	}
 
 	// -------------------------------------

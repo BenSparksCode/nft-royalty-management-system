@@ -19,6 +19,8 @@ interface IRoyaltyManager {
 			address artist
 		);
 
+	function secondaryRoyaltyRecipient() external view returns (address secondaryRecipient);
+
 	function royaltyInfo(uint256 _tokenID, uint256 _salePrice)
 		external
 		view
