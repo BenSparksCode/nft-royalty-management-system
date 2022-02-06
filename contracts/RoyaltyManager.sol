@@ -138,8 +138,6 @@ contract RoyaltyManager is IRoyaltyManager, Ownable {
 		emit RoyaltyCollectorCreated(_tokenID, royaltyCollectorAddr);
 	}
 
-	function _payRoyalty() internal {}
-
 	// -------------------------------------
 	// VIEW FUNCTIONS
 	// -------------------------------------
@@ -171,8 +169,23 @@ contract RoyaltyManager is IRoyaltyManager, Ownable {
 		artist = _royaltyConfig.artist;
 	}
 
+	// Returns total artist and secondary recipient royalties
+	// Giving ETH (Zero Address) or an ERC20
+	// Across all RoyaltyCollectors created by this Manager
 	function allRoyalties(address _royaltyToken) public view returns (uint256, uint256) {
 		// Use address(0) for ETH royalties
-		// TODO loop through array of RoyaltyCollectors and sum up all royalties
+
+		uint256 totalArtistRoyalties;
+		uint256 totalSecondaryRoyalties;
+
+		for (uint256 i = 0; i < lastTokenIDRegistered; i++) {
+			(uint256 artistRoyalties, uint256 secondaryRoyalties) = IRoyaltyCollector(
+				nftRoyaltyConfigs[i].royaltyCollector
+			).royaltiesAvailable(_royaltyToken);
+			totalArtistRoyalties += artistRoyalties;
+			totalSecondaryRoyalties += secondaryRoyalties;
+		}
+
+		return (totalArtistRoyalties, totalSecondaryRoyalties);
 	}
 }
