@@ -17,6 +17,8 @@ contract RoyaltyManager is IRoyaltyManager, Ownable {
 	uint256 public defaultRoyaltyPercentageOfSale;
 	uint256 public defaultRoyaltySplitForArtist;
 
+	uint256 public lastTokenIDRegistered; // acts as counter for looping
+
 	address public secondaryRoyaltyRecipient; // common recipient - i.e. protocol treasury
 
 	address public immutable whitelistedNFT; // only contract that can create new RoyaltyCollectors
@@ -24,14 +26,6 @@ contract RoyaltyManager is IRoyaltyManager, Ownable {
 	// NFT ID => Royalty config for that NFT ID
 	mapping(uint256 => RoyaltyConfig) public nftRoyaltyConfigs;
 	address[] public royaltyCollectorContracts; //TODO get rid of array and use NFT ID to loop in mapping
-
-	// TODO remove - moved to interface
-	// struct RoyaltyConfig {
-	// 	uint256 royaltyPercentageOfSale; // numerator over SCALE (1e18)
-	// 	uint256 royaltySplitForArtist;
-	// 	address royaltyCollector; // address of the Collector for specific NFT ID
-	// 	address artist; // artist = primary royalty recipient
-	// }
 
 	// -------------------------------------
 	// EVENTS
@@ -53,11 +47,13 @@ contract RoyaltyManager is IRoyaltyManager, Ownable {
 	// -------------------------------------
 
 	function registerTokenForRoyalties(uint256 _tokenID, address _artist) public returns (address royaltyCollector) {
-		// TODO
 		require(msg.sender == whitelistedNFT, 'RMS: NO TOKEN REGISTRATION AUTH');
 		require(nftRoyaltyConfigs[_tokenID].royaltyCollector == address(0), 'RMS: TOKEN ID ALREADY REGISTERED');
 
+		lastTokenIDRegistered = _tokenID;
 		royaltyCollector = _createNewRoyaltyCollector(_tokenID, _artist);
+
+		// TODO event
 	}
 
 	// -------------------------------------
@@ -70,10 +66,7 @@ contract RoyaltyManager is IRoyaltyManager, Ownable {
 		RoyaltyConfig memory _royaltyConfig = nftRoyaltyConfigs[_tokenID];
 		require(_royaltyConfig.royaltyCollector != address(0), 'RMS: TOKEN ID NOT REGISTERED');
 
-		// uint256 royaltyPercentageOfSale; // numerator over SCALE (1e18)
-		// uint256 royaltySplitForArtist;
-		// address royaltyCollector; // address of the Collector for specific NFT ID
-		// address artist; // artist = primary royalty recipient
+		// TODO event
 	}
 
 	function payAllRoyalties() public onlyOwner {
