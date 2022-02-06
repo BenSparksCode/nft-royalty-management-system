@@ -14,6 +14,17 @@ contract RoyaltyCollector {
 	uint256 public immutable nftID;
 
 	// -------------------------------------
+	// EVENTS
+	// -------------------------------------
+
+	event RoyaltyPaid(
+		address indexed royaltyToken,
+		address indexed artist,
+		uint256 artistRoyalty,
+		uint256 secondaryRoyalty
+	);
+
+	// -------------------------------------
 	// CONSTRUCTOR
 	// -------------------------------------
 
@@ -61,7 +72,7 @@ contract RoyaltyCollector {
 			require(artistSent && secondarySent, 'RMS: ERC20 PAYMENT FAILED');
 		}
 
-		// TODO event
+		emit RoyaltyPaid(_token, artist, artistRoyalty, secondaryRoyalty);
 	}
 
 	// -------------------------------------
