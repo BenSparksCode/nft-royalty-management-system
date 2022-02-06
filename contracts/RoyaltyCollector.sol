@@ -81,7 +81,16 @@ contract RoyaltyCollector {
 
 	function royaltiesAvailable(address _token) public view returns (uint256, uint256) {
 		// Use _token = address(0) for ETH royalties
-		// TODO returns royalties for artist, system
+		uint256 balance;
+		if (_token == address(0)) {
+			balance = address(this).balance;
+		} else {
+			balance = IERC20(_token).balanceOf(address(this));
+		}
+
+		(uint256 artistRoyalty, uint256 secondaryRoyalty, ) = getRoyaltySplitData(balance);
+
+		return (artistRoyalty, secondaryRoyalty);
 	}
 
 	function getRoyaltySplitData(uint256 _totalRoyalty)
