@@ -5,6 +5,7 @@ import '@openzeppelin/contracts/access/Ownable.sol';
 
 import './RoyaltyCollector.sol';
 import './interfaces/IRoyaltyManager.sol';
+import './interfaces/IRoyaltyCollector.sol';
 
 contract RoyaltyManager is IRoyaltyManager, Ownable {
 	// -------------------------------------

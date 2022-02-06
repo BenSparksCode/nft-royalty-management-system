@@ -2,8 +2,9 @@
 pragma solidity 0.8.11;
 
 import './interfaces/IRoyaltyManager.sol';
+import './interfaces/IRoyaltyCollector.sol';
 
-contract RoyaltyCollector {
+contract RoyaltyCollector is IRoyaltyCollector {
 	// -------------------------------------
 	// STORAGE
 	// -------------------------------------
