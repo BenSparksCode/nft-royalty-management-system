@@ -8,10 +8,10 @@ contract RoyaltyCollector {
 	// STORAGE
 	// -------------------------------------
 
+	uint256 public constant SCALE = 1e18;
+
 	address public immutable manager;
 	uint256 public immutable nftID;
-
-	uint256 public constant SCALE = 1e18;
 
 	// -------------------------------------
 	// CONSTRUCTOR
@@ -42,26 +42,22 @@ contract RoyaltyCollector {
 	}
 
 	// -------------------------------------
-	// INTERNAL STATE-MODIFYING FUNCTIONS
-	// -------------------------------------
-
-	function _calcRoyaltySplit(uint256 _totalRoyalty) internal returns (uint256, uint256) {
-		// Pull data from manager
-		RoyaltyConfig memory _config = IRoyaltyManager(manager).nftRoyaltyConfigs(nftID);
-
-		uint256 _artistRoyalty = (_totalRoyalty * royaltySplitForArtist) / SCALE;
-		uint256 _secondaryRoyalty = (_totalRoyalty * (SCALE - royaltySplitForArtist)) / SCALE;
-
-		return (_artistRoyalty, _secondaryRoyalty);
-	}
-
-	// -------------------------------------
 	// VIEW FUNCTIONS
 	// -------------------------------------
 
 	function royaltiesAvailable(address _token) public view returns (uint256, uint256) {
 		// Use _token = address(0) for ETH royalties
 		// TODO returns royalties for artist, system
+	}
+
+	function calcRoyaltySplit(uint256 _totalRoyalty) public view returns (uint256, uint256) {
+		// Pull data from manager
+		(, uint256 royaltySplitForArtist, , ) = IRoyaltyManager(manager).nftRoyaltyConfigs(nftID);
+
+		uint256 _artistRoyalty = (_totalRoyalty * royaltySplitForArtist) / SCALE;
+		uint256 _secondaryRoyalty = (_totalRoyalty * (SCALE - royaltySplitForArtist)) / SCALE;
+
+		return (_artistRoyalty, _secondaryRoyalty);
 	}
 
 	// -------------------------------------

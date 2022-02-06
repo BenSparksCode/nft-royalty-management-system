@@ -9,6 +9,16 @@ interface IRoyaltyManager {
 		address artist; // artist = primary royalty recipient
 	}
 
+	function nftRoyaltyConfigs(uint256 _tokenID)
+		external
+		view
+		returns (
+			uint256 royaltyPercentageOfSale, // numerator over SCALE (1e18)
+			uint256 royaltySplitForArtist,
+			address royaltyCollector, // address of the Collector for specific NFT ID
+			address artist
+		);
+
 	function royaltyInfo(uint256 _tokenID, uint256 _salePrice)
 		external
 		view
