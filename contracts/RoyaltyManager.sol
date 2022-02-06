@@ -13,7 +13,6 @@ contract RoyaltyManager is IRoyaltyManager, Ownable {
 
 	uint256 public constant SCALE = 1e18;
 
-	// TODO Start with global royalty, do individual control after
 	uint256 public defaultRoyaltyPercentageOfSale;
 	uint256 public defaultRoyaltySplitForArtist;
 
@@ -24,14 +23,20 @@ contract RoyaltyManager is IRoyaltyManager, Ownable {
 	address public immutable whitelistedNFT; // only contract that can create new RoyaltyCollectors
 
 	// NFT ID => Royalty config for that NFT ID
+	// Use lastTokenIDRegistered as max index, for looping
 	mapping(uint256 => RoyaltyConfig) public nftRoyaltyConfigs;
-	address[] public royaltyCollectorContracts; //TODO get rid of array and use NFT ID to loop in mapping
 
 	// -------------------------------------
 	// EVENTS
 	// -------------------------------------
 
 	event RoyaltyCollectorCreated(uint256 nftID, address royaltyCollector);
+	event SingleTokenRoyaltyPaid();
+	event AllRoyaltiesPaid();
+	event SpecificRoyaltyConfigSet();
+	event DefaultRoyaltyPercentageOfSaleSet();
+	event DefaultRoyaltySplitForArtistSet();
+	event SecondaryRoyaltyRecipientSet();
 
 	// -------------------------------------
 	// CONSTRUCTOR
@@ -52,8 +57,7 @@ contract RoyaltyManager is IRoyaltyManager, Ownable {
 
 		lastTokenIDRegistered = _tokenID;
 		royaltyCollector = _createNewRoyaltyCollector(_tokenID, _artist);
-
-		// TODO event
+		// event emitted in internal function
 	}
 
 	// -------------------------------------
@@ -129,7 +133,7 @@ contract RoyaltyManager is IRoyaltyManager, Ownable {
 			_artist
 		);
 
-		royaltyCollectorContracts.push(royaltyCollectorAddr); //TODO only use mapping
+		nftRoyaltyConfigs[_tokenID] = _royaltyConfig;
 
 		emit RoyaltyCollectorCreated(_tokenID, royaltyCollectorAddr);
 	}
