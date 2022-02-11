@@ -32,8 +32,12 @@ contract RoyaltyManager is IRoyaltyManager, Ownable {
     // -------------------------------------
 
     event RoyaltyCollectorCreated(uint256 nftID, address royaltyCollector);
-    event SingleTokenRoyaltyPaid();
-    event AllRoyaltiesPaid();
+    event SingleTokenRoyaltyPaid(
+        uint256 tokenID,
+        address royaltyCurrency,
+        uint256 amountPaid
+    );
+    event AllRoyaltiesPaid(address royaltyCurrency, uint256 amountPaid);
     event SpecificRoyaltyConfigSet();
     event DefaultRoyaltyPercentageOfSaleSet();
     event DefaultRoyaltySplitForArtistSet();
@@ -88,15 +92,19 @@ contract RoyaltyManager is IRoyaltyManager, Ownable {
             "RMS: TOKEN ID NOT REGISTERED"
         );
 
-        IRoyaltyCollector(_royaltyConfig.royaltyCollector).payRoyalty(
-            _royaltyCurrency
-        );
+        // TODO add amountPaid return in payRoyalty
+        uint256 amountPaid = IRoyaltyCollector(_royaltyConfig.royaltyCollector)
+            .payRoyalty(_royaltyCurrency);
 
-        // TODO event
+        emit SingleTokenRoyaltyPaid(_tokenID, _royaltyCurrency, amountPaid);
     }
 
-    function payAllRoyalties() public onlyOwner {
+    function payAllRoyalties(address _royaltyCurrency) public onlyOwner {
+        uint256 amountPaid;
+
         // TODO
+
+        emit AllRoyaltiesPaid(_royaltyCurrency, amountPaid);
     }
 
     // Can only change royalty % and artist cut
