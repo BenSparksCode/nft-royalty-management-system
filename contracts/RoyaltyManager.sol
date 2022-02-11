@@ -113,7 +113,17 @@ contract RoyaltyManager is IRoyaltyManager, Ownable {
         uint256 paidToArtist;
         uint256 paidToSecondary;
 
-        // TODO
+        for (uint256 i = 0; i < lastTokenIDRegistered; i++) {
+            try
+                IRoyaltyCollector(nftRoyaltyConfigs[i].royaltyCollector)
+                    .payRoyalty(_royaltyCurrency)
+            returns (uint256 _paidToArtist, uint256 _paidToSecondary) {
+                paidToArtist += _paidToArtist;
+                paidToSecondary += _paidToSecondary;
+            } catch {
+                continue;
+            }
+        }
 
         emit AllRoyaltiesPaid(_royaltyCurrency, paidToArtist, paidToSecondary);
     }

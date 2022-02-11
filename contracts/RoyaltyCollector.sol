@@ -47,7 +47,8 @@ contract RoyaltyCollector is IRoyaltyCollector {
             balance = IERC20(_token).balanceOf(address(this));
         }
 
-        require(balance > 0, "RMS: NO ROYALTIES TO PAY");
+        // return 0s and skip logic if no balance of token
+        if (balance == 0) return (0, 0);
 
         // Royalty data will be set dependent on ETH/Token payment
         address secondaryRecipient = IRoyaltyManager(manager)
