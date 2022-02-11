@@ -7,5 +7,5 @@ interface IRoyaltyCollector {
         view
         returns (uint256, uint256);
 
-    function payRoyalty(address _token) external;
+    function payRoyalty(address _token) external returns (uint256, uint256);
 }

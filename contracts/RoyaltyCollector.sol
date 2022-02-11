@@ -38,7 +38,7 @@ contract RoyaltyCollector is IRoyaltyCollector {
     // PUBLIC STATE-MODIFYING FUNCTIONS
     // -------------------------------------
 
-    function payRoyalty(address _token) public {
+    function payRoyalty(address _token) public returns (uint256, uint256) {
         // Use _token = address(0) for ETH royalties
         uint256 balance;
         if (_token == address(0)) {
@@ -77,6 +77,9 @@ contract RoyaltyCollector is IRoyaltyCollector {
 
             require(artistSent && secondarySent, "RMS: ERC20 PAYMENT FAILED");
         }
+
+        // Returns amountPaidToArtist and amountPaidToSecondaryRecipient
+        return (artistRoyalty, secondaryRoyalty);
 
         emit RoyaltyPaid(_token, artist, artistRoyalty, secondaryRoyalty);
     }
