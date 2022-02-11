@@ -74,13 +74,22 @@ contract RoyaltyManager is IRoyaltyManager, Ownable {
     // ONLY-OWNER FUNCTIONS
     // -------------------------------------
 
-    function payRoyaltyByID(uint256 _tokenID) public onlyOwner {
-        // TODO
-
+    // TODO remove onlyOwner? anyone can trigger pay?
+    // TODO natspec - _royaltyCurrency = address(0) for ETH
+    function payRoyaltyByID(uint256 _tokenID, address _royaltyCurrency)
+        public
+        onlyOwner
+    {
         RoyaltyConfig memory _royaltyConfig = nftRoyaltyConfigs[_tokenID];
+
+        // Check that a Royalty Collector has been created for this token ID
         require(
-            _royaltyConfig.royaltyCollector != address(0),
+            lastTokenIDRegistered >= _tokenID,
             "RMS: TOKEN ID NOT REGISTERED"
+        );
+
+        IRoyaltyCollector(_royaltyConfig.royaltyCollector).payRoyalty(
+            _royaltyCurrency
         );
 
         // TODO event
