@@ -79,16 +79,9 @@ contract RoyaltyManager is IRoyaltyManager, Ownable {
         // event emitted in internal function
     }
 
-    // -------------------------------------
-    // ONLY-OWNER FUNCTIONS
-    // -------------------------------------
-
     // TODO remove onlyOwner? anyone can trigger pay?
     // TODO natspec - _royaltyCurrency = address(0) for ETH
-    function payRoyaltyByID(uint256 _tokenID, address _royaltyCurrency)
-        public
-        onlyOwner
-    {
+    function payRoyaltyByID(uint256 _tokenID, address _royaltyCurrency) public {
         RoyaltyConfig memory _royaltyConfig = nftRoyaltyConfigs[_tokenID];
 
         // Check that a Royalty Collector has been created for this token ID
@@ -109,7 +102,7 @@ contract RoyaltyManager is IRoyaltyManager, Ownable {
         );
     }
 
-    function payAllRoyalties(address _royaltyCurrency) public onlyOwner {
+    function payAllRoyalties(address _royaltyCurrency) public {
         uint256 paidToArtist;
         uint256 paidToSecondary;
 
@@ -127,6 +120,10 @@ contract RoyaltyManager is IRoyaltyManager, Ownable {
 
         emit AllRoyaltiesPaid(_royaltyCurrency, paidToArtist, paidToSecondary);
     }
+
+    // -------------------------------------
+    // ONLY-OWNER FUNCTIONS
+    // -------------------------------------
 
     // Can only change royalty % and artist cut
     function setSpecificRoyaltyConfig(
