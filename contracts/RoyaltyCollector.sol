@@ -52,18 +52,15 @@ contract RoyaltyCollector is IRoyaltyCollector {
         // Royalty data will be set dependent on ETH/Token payment
         address secondaryRecipient = IRoyaltyManager(manager)
             .secondaryRoyaltyRecipient();
-        uint256 artistRoyalty;
-        uint256 secondaryRoyalty;
-        address artist;
 
-        // TODO fix balance stuff below
+        (
+            uint256 artistRoyalty,
+            uint256 secondaryRoyalty,
+            address artist
+        ) = getRoyaltySplitData(balance);
 
         if (_token == address(0)) {
             // ETH royalties
-            (artistRoyalty, secondaryRoyalty, artist) = getRoyaltySplitData(
-                address(this).balance
-            );
-
             (bool artistSent, ) = artist.call{value: artistRoyalty}("");
             (bool secondarySent, ) = secondaryRecipient.call{
                 value: secondaryRoyalty
@@ -72,10 +69,6 @@ contract RoyaltyCollector is IRoyaltyCollector {
             require(artistSent && secondarySent, "RMS: ETH PAYMENT FAILED");
         } else {
             // ERC20 royalties
-            (artistRoyalty, secondaryRoyalty, artist) = getRoyaltySplitData(
-                IERC20(_token).balanceOf(address(this))
-            );
-
             bool artistSent = IERC20(_token).transfer(artist, artistRoyalty);
             bool secondarySent = IERC20(_token).transfer(
                 secondaryRecipient,
