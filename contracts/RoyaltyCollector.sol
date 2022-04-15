@@ -35,6 +35,14 @@ contract RoyaltyCollector is IRoyaltyCollector {
     }
 
     // -------------------------------------
+    // FALLBACK AND RECIEVE FUNCTION FOR ETH
+    // -------------------------------------
+
+    receive() external payable {}
+
+    fallback() external payable {}
+
+    // -------------------------------------
     // PUBLIC STATE-MODIFYING FUNCTIONS
     // -------------------------------------
 
